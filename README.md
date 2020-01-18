@@ -1,6 +1,10 @@
 # Dawnbench Inference on Imagenet
+## Summary
+The inference speed of ResNet26-based model is optimized and improved through PAI-Blade.
+PAI-Blade is the framework for high-efficiency model deployment developed by AliCloud PAI: [PAI-Blade](https://help.aliyun.com/document_detail/145713.html).
+The BBS (Blade Benchmark Suite) can be accessed: [BBS](https://help.aliyun.com/document_detail/140559.html?spm=a2c4g.11186623.6.664.1137148cd2FacP).
 
-## run inference
+## Run inference
 1. Clone this repo.
 2. Put Imagenet validation set (50000 images) in `imagenet/val_data/`.
 ```Example:
@@ -14,7 +18,7 @@
 ...
 ```
 3. Pull nvcr.io/nvidia/tensorrt:19.09-py3 from NGC.
-4. Start nvcr.io/nvidia/tensorrt:19.09-py3 container, and install dependencies.
+4. Start nvcr.io/nvidia/tensorrt:19.09-py3 container, and install dependencies:
 ```
 # start docker container
 sh run.sh
