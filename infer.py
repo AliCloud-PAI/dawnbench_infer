@@ -8,13 +8,14 @@ import os
 import time
 import logging
 import argparse
-
 import numpy as np
 import tensorflow as tf
 
 import tensorrt as trt
 import pycuda.driver as cuda
 import pycuda.autoinit
+import ctypes
+ctypes.CDLL('./libconvplugin.so')
 
 _R_MEAN = 123.68
 _G_MEAN = 116.78
@@ -93,7 +94,6 @@ class EvaluationTask(object):
         self.test_list = os.path.join(self.data_path, 'val.list')
         self.batch_size = 1
         self.num_class = 1000
-
 
     def _mean_image_subtraction(self, image, means, num_channels):
         means = tf.broadcast_to(means, tf.shape(image))
@@ -227,7 +227,6 @@ class EvaluationTask(object):
         print('Mean time per sample: %s seconds' % time_mean)
         topk_acc = float(topk_num) / img_num
         print('Top-5 validation acc.: %s' % topk_acc)
-
         metric = dict()
         metric['top5_acc'] = float(topk_acc)
         self.logging.info(metric)
@@ -237,6 +236,15 @@ class EvaluationTask(object):
 
 
 if __name__ == '__main__':
+  affinity = os.sched_getaffinity(0)
+  print("affinity mask before:", affinity)
+  if len(affinity) >=2:
+    affinity_mask = {0, 1}
+  else:
+    affinity_mask = {0}
+  os.sched_setaffinity(0, affinity_mask)
+  affinity = os.sched_getaffinity(0)
+  print("affinity mask after:", affinity)
   # create evaluation task, then obtain the results
   task = EvaluationTask(args.size, args.size, args.data, args.engine)
   task.logging = logging
